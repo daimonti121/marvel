@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 
-// import Spinner from '../spinner/Spinner';
+import Spinner from '../spinner/Spinner';
 import './charList.scss';
 
 const CharList = () => {
     const [cards, setCards] = useState(null);
-    // const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
+
+    const onCharLoaded = () => {
+        setLoading(false);
+    };
 
     useEffect(() => {
         fetch(
@@ -15,16 +19,18 @@ const CharList = () => {
             .then((data) => {
                 console.log(data.data.results);
                 setCards(data.data.results);
+                onCharLoaded();
             });
-    }, []);    
+    }, []);
 
-    // const spinner = loading ? <Spinner /> : null;
-    // const content = !(loading) ? <ListCards cards={cards} /> : null;
+    const spinner = loading ? <Spinner /> : null;
+    const content = !loading ? <ListCards cards={cards} /> : null;
 
     return (
         <div className='char__list'>
             <ul className='char__grid'>
-                <ListCards cards={cards} />             
+                {spinner}
+                {content}
             </ul>
             <button className='button button__main button__long'>
                 <div className='inner'>load more</div>
@@ -33,18 +39,28 @@ const CharList = () => {
     );
 };
 
-const ListCards = ({cards}) => {
-
+const ListCards = ({ cards }) => {
+    
     return (
         <>
-            {cards && cards.map(card => (
-                <li className='char__item'>
-                    <img src={card.thumbnail.path + '.' + card.thumbnail.extension} alt='abyss' />
-                    <div className='char__name'>{card.name}</div>
-                </li>
-            ))}   
+            {cards &&
+                cards.map((card) => (
+                    <li className='char__item'>
+                        <img
+                            src={
+                                card.thumbnail.path +
+                                '.' +
+                                card.thumbnail.extension
+                            }
+                            alt='abyss'
+                        />
+                        <div className='char__name'>{card.name}</div>
+                    </li>
+                ))}
         </>
-    )
-}
+    );
+};
+
+
 
 export default CharList;
