@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Spinner from '../spinner/Spinner';
 import './charList.scss';
 
-const CharList = () => {
+const CharList = ({ onCharSelected }) => {
     const [cards, setCards] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -24,7 +24,7 @@ const CharList = () => {
     }, []);
 
     const spinner = loading ? <Spinner /> : null;
-    const content = !loading ? <ListCards cards={cards} /> : null;
+    const content = !loading ? <ListCards cards={cards} onCharSelected={onCharSelected}/> : null;
 
     return (
         <div className='char__list'>
@@ -39,13 +39,13 @@ const CharList = () => {
     );
 };
 
-const ListCards = ({ cards }) => {
-    
+const ListCards = ({ cards, onCharSelected }) => {
+
     return (
         <>
             {cards &&
                 cards.map((card) => (
-                    <li className='char__item'>
+                    <li key={card.id} className='char__item' onClick={() => onCharSelected(card.id)}>
                         <img
                             src={
                                 card.thumbnail.path +
